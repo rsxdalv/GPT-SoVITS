@@ -19,3 +19,5 @@ tmp_audio
 trained*
 history
 app.log
+*.egg-info
+build
