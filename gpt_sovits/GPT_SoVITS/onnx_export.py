@@ -1,5 +1,5 @@
-from module.models_onnx import SynthesizerTrn, symbols
-from AR.models.t2s_lightning_module_onnx import Text2SemanticLightningModule
+from gpt_sovits.GPT_SoVITS.module.models_onnx import SynthesizerTrn, symbols
+from gpt_sovits.GPT_SoVITS.AR.models.t2s_lightning_module_onnx import Text2SemanticLightningModule
 import torch
 import torchaudio
 from torch import nn
@@ -9,7 +9,7 @@ cnhubert.cnhubert_base_path=cnhubert_base_path
 ssl_model = cnhubert.get_model()
 from text import cleaned_text_to_sequence
 import soundfile
-from my_utils import load_audio
+from gpt_sovits.GPT_SoVITS.my_utils import load_audio
 import os
 import json
 

@@ -10,10 +10,10 @@ import torch
 import LangSegment
 
 from typing import Dict, List, Tuple
-from text.cleaner import clean_text
+from gpt_sovits.GPT_SoVITS.text.cleaner import clean_text
 from text import cleaned_text_to_sequence
 from transformers import AutoModelForMaskedLM, AutoTokenizer
-from TTS_infer_pack.text_segmentation_method import split_big_text, splits, get_method as get_seg_method
+from gpt_sovits.GPT_SoVITS.TTS_infer_pack.text_segmentation_method import split_big_text, splits, get_method as get_seg_method
 
 from gpt_sovits.tools.i18n.i18n import I18nAuto
 

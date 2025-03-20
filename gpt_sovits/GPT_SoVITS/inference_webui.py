@@ -36,8 +36,8 @@ cnhubert_base_path = os.environ.get("cnhubert_base_path", None)
 bert_path = os.environ.get("bert_path", None)
         
 import gradio as gr
-from TTS_infer_pack.TTS import TTS, TTS_Config
-from TTS_infer_pack.text_segmentation_method import get_method
+from gpt_sovits.GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
+from gpt_sovits.GPT_SoVITS.TTS_infer_pack.text_segmentation_method import get_method
 from gpt_sovits.tools.i18n.i18n import I18nAuto
 
 i18n = I18nAuto()

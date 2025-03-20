@@ -7,8 +7,8 @@ from typing import List
 import torch
 from tqdm import tqdm
 
-from AR.models.utils import make_pad_mask
-from AR.models.utils import (
+from gpt_sovits.GPT_SoVITS.AR.models.utils import make_pad_mask
+from gpt_sovits.GPT_SoVITS.AR.models.utils import (
     topk_sampling,
     sample,
     logits_to_probs,
@@ -17,11 +17,11 @@ from AR.models.utils import (
     make_reject_y, 
     get_batch_logps
 )
-from AR.modules.embedding import SinePositionalEmbedding
-from AR.modules.embedding import TokenEmbedding
-from AR.modules.transformer import LayerNorm
-from AR.modules.transformer import TransformerEncoder
-from AR.modules.transformer import TransformerEncoderLayer
+from gpt_sovits.GPT_SoVITS.AR.modules.embedding import SinePositionalEmbedding
+from gpt_sovits.GPT_SoVITS.AR.modules.embedding import TokenEmbedding
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer import LayerNorm
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer import TransformerEncoder
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer import TransformerEncoderLayer
 from torch import nn
 from torch.nn import functional as F
 from torchmetrics.classification import MulticlassAccuracy

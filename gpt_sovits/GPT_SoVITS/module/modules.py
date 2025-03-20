@@ -8,8 +8,8 @@ from torch.nn import Conv1d
 from torch.nn.utils import weight_norm, remove_weight_norm
 
 from module import commons
-from module.commons import init_weights, get_padding
-from module.transforms import piecewise_rational_quadratic_transform
+from gpt_sovits.GPT_SoVITS.module.commons import init_weights, get_padding
+from gpt_sovits.GPT_SoVITS.module.transforms import piecewise_rational_quadratic_transform
 import torch.distributions as D
 
 

@@ -3,11 +3,11 @@
 import torch
 from tqdm import tqdm
 
-from AR.modules.embedding_onnx import SinePositionalEmbedding
-from AR.modules.embedding_onnx import TokenEmbedding
-from AR.modules.transformer_onnx import LayerNorm
-from AR.modules.transformer_onnx import TransformerEncoder
-from AR.modules.transformer_onnx import TransformerEncoderLayer
+from gpt_sovits.GPT_SoVITS.AR.modules.embedding_onnx import SinePositionalEmbedding
+from gpt_sovits.GPT_SoVITS.AR.modules.embedding_onnx import TokenEmbedding
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer_onnx import LayerNorm
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer_onnx import TransformerEncoder
+from gpt_sovits.GPT_SoVITS.AR.modules.transformer_onnx import TransformerEncoderLayer
 from torch import nn
 from torch.nn import functional as F
 from torchmetrics.classification import MulticlassAccuracy
