@@ -11,7 +11,7 @@ import LangSegment
 
 from typing import Dict, List, Tuple
 from gpt_sovits.GPT_SoVITS.text.cleaner import clean_text
-from text import cleaned_text_to_sequence
+from gpt_sovits.GPT_SoVITS.text import cleaned_text_to_sequence
 from transformers import AutoModelForMaskedLM, AutoTokenizer
 from gpt_sovits.GPT_SoVITS.TTS_infer_pack.text_segmentation_method import split_big_text, splits, get_method as get_seg_method
 

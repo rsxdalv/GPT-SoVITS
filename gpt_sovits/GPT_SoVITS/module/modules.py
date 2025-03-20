@@ -3,11 +3,9 @@ import numpy as np
 import torch
 from torch import nn
 from torch.nn import functional as F
-
 from torch.nn import Conv1d
 from torch.nn.utils import weight_norm, remove_weight_norm
-
-from module import commons
+from gpt_sovits.GPT_SoVITS.module import commons
 from gpt_sovits.GPT_SoVITS.module.commons import init_weights, get_padding
 from gpt_sovits.GPT_SoVITS.module.transforms import piecewise_rational_quadratic_transform
 import torch.distributions as D

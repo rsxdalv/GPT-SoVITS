@@ -7,7 +7,7 @@ from feature_extractor import cnhubert
 cnhubert_base_path = "pretrained_models/chinese-hubert-base"
 cnhubert.cnhubert_base_path=cnhubert_base_path
 ssl_model = cnhubert.get_model()
-from text import cleaned_text_to_sequence
+from gpt_sovits.GPT_SoVITS.text import cleaned_text_to_sequence
 import soundfile
 from gpt_sovits.GPT_SoVITS.my_utils import load_audio
 import os

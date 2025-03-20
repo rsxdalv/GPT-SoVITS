@@ -13,7 +13,7 @@ from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
 from gpt_sovits.GPT_SoVITS.module.commons import init_weights, get_padding
 from gpt_sovits.GPT_SoVITS.module.mrte_model import MRTE
 from gpt_sovits.GPT_SoVITS.module.quantize import ResidualVectorQuantizer
-from text import symbols
+from gpt_sovits.GPT_SoVITS.text import symbols
 from torch.cuda.amp import autocast
 
 

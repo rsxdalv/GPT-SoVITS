@@ -4,17 +4,15 @@ from typing import List
 import torch
 from torch import nn
 from torch.nn import functional as F
-
-from module import commons
-from module import modules
-from module import attentions
-
+from gpt_sovits.GPT_SoVITS.module import commons
+from gpt_sovits.GPT_SoVITS.module import modules
+from gpt_sovits.GPT_SoVITS.module import attentions
 from torch.nn import Conv1d, ConvTranspose1d, AvgPool1d, Conv2d
 from torch.nn.utils import weight_norm, remove_weight_norm, spectral_norm
 from gpt_sovits.GPT_SoVITS.module.commons import init_weights, get_padding
 from gpt_sovits.GPT_SoVITS.module.mrte_model import MRTE
 from gpt_sovits.GPT_SoVITS.module.quantize import ResidualVectorQuantizer
-from text import symbols
+from gpt_sovits.GPT_SoVITS.text import symbols
 from torch.cuda.amp import autocast
 import contextlib
 
