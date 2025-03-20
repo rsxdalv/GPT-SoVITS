@@ -1,11 +1,48 @@
-import os, sys, json
+import os, json
 from typing import List, Any, Optional ,Dict, Literal   
 from pydantic import BaseModel, Field, model_validator
+from ..Synthesizers.base import load_config
 
 __version__ = "2.6.3"
 
-from Synthesizers.base import load_config
+common_config : dict = {}
+# Read version from common config
+try:
+    with open('common_config.json', 'r') as f:
+        common_config = json.load(f)
+except:
+    common_config = {
+        "version": "0.1.0",
+        "inbrowser":True,
+        "is_share":False,
+        "synthesizer": "gsv_fast",
+        "server_name": "127.0.0.1",
+        "server_port": 5000,
+        "also_enable_api": False,
+        "locale": "en_US",
+        "max_text_length": 60,
+    }
+    os.makedirs(os.path.dirname("common_config.json"), exist_ok=True)
+    with open('common_config.json', 'w') as f:
+        json.dump(common_config, f, indent=4, ensure_ascii=False)
 
+class CommonConfigManager:
+    version: str = common_config.get("version", "0.1.0")
+    synthesizer: str = common_config.get("synthesizer", "gsv_fast")
+    server_name: str = common_config.get("server_name", "127.0.0.1")
+    server_port: int = common_config.get("server_port", 5000)
+    is_share: bool = common_config.get("is_share", False)
+    inbrowser: bool = common_config.get("inbrowser", True)
+    also_enable_api: bool = common_config.get("also_enable_api", False)
+    locale: str = common_config.get("locale", "en_US")
+    max_text_length: int = common_config.get("max_text_length", 60)
+
+    def update(self, key:str, value:Any) -> None:
+        if hasattr(self, key):
+            setattr(self, key, value)
+            common_config[key] = value
+            with open("common_config.json", "w", encoding="utf-8") as f:
+                json.dump(common_config, f, indent=4, ensure_ascii=False)
 
 class Api_Config(BaseModel):   
     config_path:str = None

@@ -5,9 +5,6 @@ import random
 import traceback
 
 from tqdm import tqdm
-now_dir = os.getcwd()
-sys.path.insert(0, now_dir)
-sys.path.insert(0, os.path.join(now_dir, "GPT_SoVITS"))
 import ffmpeg
 import os
 from typing import Generator, List, Tuple, Union
@@ -17,16 +14,16 @@ import torch.nn.functional as F
 import yaml
 from transformers import AutoModelForMaskedLM, AutoTokenizer
 
-from AR.models.t2s_lightning_module import Text2SemanticLightningModule
-from feature_extractor.cnhubert import CNHubert
-from module.models import SynthesizerTrn
+from ..AR.models.t2s_lightning_module import Text2SemanticLightningModule
+from ..feature_extractor.cnhubert import CNHubert
+from ..module.models import SynthesizerTrn
 import librosa
 from time import time as ttime
 from tools.i18n.i18n import I18nAuto
-from my_utils import load_audio
-from module.mel_processing import spectrogram_torch
-from TTS_infer_pack.text_segmentation_method import splits
-from TTS_infer_pack.TextPreprocessor import TextPreprocessor
+from ..my_utils import load_audio
+from ..module.mel_processing import spectrogram_torch
+from .text_segmentation_method import splits
+from .TextPreprocessor import TextPreprocessor
 
 import pickle
 i18n = I18nAuto()

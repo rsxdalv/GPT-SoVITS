@@ -1,4 +1,3 @@
-
 import os, json, sys
 sys.path.append(".")
 
@@ -7,7 +6,7 @@ from typing import List, Dict, Literal, Optional, Any, Union
 import urllib.parse
 import hashlib
 
-from Synthesizers.base import Base_TTS_Task, ParamItem, init_params_config
+from ..base import Base_TTS_Task, ParamItem, init_params_config
 
 global global_based_synthesizer
 global_based_synthesizer = None
@@ -19,9 +18,9 @@ def set_based_synthesizer(based_synthesizer:str):
 def get_params_config(based_synthesizer:str= None):
     assert based_synthesizer is not None, "based_synthesizer is not set, please init the remote synthesizer first."
     try:
-        with open(os.path.join(os.path.dirname(__file__), "configs", "params_config.json"), "r", encoding="utf-8") as f:
+        with open(os.path.join("gpt_sovits/Synthesizers/remote/configs", "params_config.json"), "r", encoding="utf-8") as f:
             res:dict = json.load(f)
-        with open(os.path.join("Synthesizers", based_synthesizer ,"configs", "params_config.json"), "r", encoding="utf-8") as f:
+        with open(os.path.join("gpt_sovits/Synthesizers", based_synthesizer, "configs", "params_config.json"), "r", encoding="utf-8") as f:
             res.update(json.load(f))
         return init_params_config(res)
     except:

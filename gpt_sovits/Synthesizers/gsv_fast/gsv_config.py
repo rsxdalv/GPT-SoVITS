@@ -31,110 +31,79 @@ def test_fp16_computation():
         return False, f"Your GPU does not support FP16 computation. Error: {e}"
 
 
-def get_device_info(device_config="auto", is_half_config="auto")-> tuple[str, bool]:
-    global device, is_half
-    try:
-        return device, is_half
-    except:
-        if torch.cuda.is_available():
-            device = "cuda"
+def get_device_info(device_str:str = "auto", is_half_str:bool = False):
+    is_half = False
+    if device_str == "auto":
+        device = get_optimal_torch_device()
+        try:
+            device_arch = get_optimal_arch_name(device)
+            os.environ["TORCH_DEVICE_ARCH"] = device_arch
+        except:
+            os.environ["TORCH_DEVICE_ARCH"] = "cpu"
+    else:
+        device = torch.device(device_str)
+    if is_half_str:
+        if device.type == "cuda":
             is_half = True
-        else:
-            device = "cpu"
-            is_half = False
+    return device, is_half
 
-        if device_config != "auto":
-            device = device_config
-            is_half = (device == "cpu")
-        if is_half_config != "auto":
-            is_half = str(is_half_config).lower() == "true"
+def get_optimal_torch_device(index=0) -> torch.device:
+    # Get the optimal Torch device
+    if torch.cuda.is_available():
+        return torch.device(f"cuda:{index % torch.cuda.device_count()}")
+    elif torch.backends.mps.is_available():
+        return torch.device("mps")
+    return torch.device("cpu")
 
-        supports_fp16, message = test_fp16_computation()
-        if not supports_fp16 and is_half:
-            is_half = False
-            print(message)
+def get_optimal_arch_name(device: torch.device) -> str:
+    if device.type == "cuda":
+        return "cuda"
+    if device.type == "mps":
+        return "mps"
+    return "cpu"
 
-        return device, is_half
-
-
-
-
-def load_infer_config(character_path):
-    config_path = os.path.join(character_path, "infer_config.json")
-    """加载环境配置文件"""
-    with open(config_path, 'r', encoding='utf-8') as f:
+def load_infer_config(model_path: str):
+    config_path = os.path.join(model_path, "infer_config.json")
+    print(f"Loading inference config from: {config_path}")
+    with open(config_path, "r", encoding="utf-8") as f:
         config = json.load(f)
     return config
 
-def auto_generate_infer_config(character_path):
-    ## TODO: Auto-generate wav-list and prompt-list from character_path
-    ##     
-    # Initialize variables for file detection
+def auto_generate_infer_config(folder_path:str):
+    """
+    Automatically generate infer_config.json from the files in the folder
+    """
+    infer_config = {}
+    for file in os.listdir(folder_path):
+        if file.endswith(".ckpt"):
+            infer_config["gpt_path"] = file
+        elif file.endswith(".pth"):
+            infer_config["sovits_path"] = file
 
-    print(f"正在自动生成配置文件: {character_path}")
-    ckpt_file_found = None
-    pth_file_found = None
-    wav_file_found = None
+    if "gpt_path" not in infer_config or "sovits_path" not in infer_config:
+        raise FileNotFoundError("No .ckpt or .pth file found in the folder!")
 
-    # Iterate through files in character_path to find matching file types
-    for dirpath, dirnames, filenames in os.walk(character_path):
-        for file in filenames:
-            # 构建文件的完整路径
-            full_path = os.path.join(dirpath, file)
-            # 从full_path中移除character_path部分
-            relative_path = remove_character_path(full_path,character_path)
-            # 根据文件扩展名和变量是否已赋值来更新变量
-            if file.lower().endswith(".ckpt") and ckpt_file_found is None:
-                ckpt_file_found = relative_path
-            elif file.lower().endswith(".pth") and pth_file_found is None:
-                pth_file_found = relative_path
-            elif file.lower().endswith(".wav") and wav_file_found is None:
-                wav_file_found = relative_path
-            elif file.lower().endswith(".mp3"):
-                import pydub
-                # Convert mp3 to wav
-                wav_file_path = os.path.join(dirpath,os.path.splitext(file)[0] + ".wav")
+    # Try to find reference audio files
+    emotion_list = {}
+    wav_files = []
+    for file in os.listdir(folder_path):
+        if file.endswith(".wav"):
+            wav_files.append(file)
 
-
-                pydub.AudioSegment.from_mp3(full_path).export(wav_file_path, format="wav")
-                if wav_file_found is None:
-                    wav_file_found = remove_character_path(os.path.join(dirpath,os.path.splitext(file)[0] + ".wav"),character_path)
-                    
-
-    # Initialize infer_config with gpt_path and sovits_path regardless of wav_file_found
-    infer_config = {
-        "gpt_path": ckpt_file_found,
-        "sovits_path": pth_file_found,
-        "software_version": "1.1",
-        r"简介": r"这是一个配置文件适用于https://github.com/X-T-E-R/TTS-for-GPT-soVITS，是一个简单好用的前后端项目"
-    }
-
-    # If wav file is also found, update infer_config to include ref_wav_path, prompt_text, and prompt_language
-    if wav_file_found:
-        wav_file_name = os.path.splitext(os.path.basename(wav_file_found))[0]  # Extract the filename without extension
-        infer_config["emotion_list"] = {
-            "default": {
-                "ref_wav_path": wav_file_found,
-                "prompt_text": wav_file_name,
-                "prompt_language": "多语种混合"
-            }
+    # If there are wav files, add them to emotion_list
+    if len(wav_files) > 0:
+        emotion_list["default"] = {
+            "ref_wav_path": wav_files[0],  # Use the first wav file
+            "prompt_text": "",
+            "prompt_language": "auto"
         }
-    else:
-        raise Exception("找不到wav参考文件！请把有效wav文件放置在模型文件夹下。")
-        pass
-    # Check if the essential model files were found
-    if ckpt_file_found and pth_file_found:
-        infer_config_path = os.path.join(character_path, "infer_config.json")
-        try:
-            with open(infer_config_path , 'w', encoding='utf-8') as f:
-                json.dump(infer_config, f, ensure_ascii=False, indent=4)
-        except IOError as e:
-            print(f"无法写入文件: {infer_config_path}. 错误: {e}")
 
-        return infer_config_path
-    else:
-        return "Required model files (.ckpt or .pth) not found in character_path directory."
+    infer_config["emotion_list"] = emotion_list
 
+    # Save the config
+    config_path = os.path.join(folder_path, "infer_config.json")
+    with open(config_path, "w", encoding="utf-8") as f:
+        json.dump(infer_config, f, indent=4, ensure_ascii=False)
 
 def remove_character_path(full_path,character_path):
     # 从full_path中移除character_path部分

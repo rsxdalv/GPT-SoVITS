@@ -1,34 +1,100 @@
-import os
 import json
-import locale
-from src.common_config_manager import app_config
+import os
+from typing import List, Dict, Any, Optional
+from ...src.common_config_manager import app_config
 
-def load_language_list(language, locale_paths):
-    language_map = {}
-    for locale_path in locale_paths:
-        lang_file = os.path.join(locale_path, f"{language}.json")
-        if os.path.exists(lang_file):
-            with open(lang_file, 'r', encoding='utf-8') as f:
-                language_map.update(json.load(f))
-    return language_map
+# Default locale path
+default_locale_path = "i18n/locale"
 
 class I18nAuto:
-    def __init__(self, language=None, locale_paths=[], locale_path="./i18n/locale"):
-        if language in ["auto", None]:
-            if app_config.locale in ["auto", None, ""]:
-                language = locale.getdefaultlocale()[0]
-            else:
-                language = app_config.locale
-        if not any(os.path.exists(os.path.join(locale_path, f"{language}.json")) for locale_path in locale_paths):
-            language = "zh_CN"
+    """
+    I18nAuto class for handling internationalization
+    """
+    def __init__(self, language: str = "auto", locale_path: str = default_locale_path):
+        """
+        Initialize I18nAuto
+
+        Args:
+            language (str): Language code (e.g., "en", "zh", "auto")
+            locale_path (str): Path to locale files
+        """
         self.language = language
-        if len(locale_paths):
-            self.language_map = load_language_list(language, locale_paths)
-        else:
-            self.language_map = load_language_list(language, [locale_path])
+        self.locale_path = locale_path
+        self.locale_dict = {}
+        
+        # If language is auto, try to get from app_config
+        if language == "auto":
+            self.language = app_config.locale
+        
+        # Load locale file
+        self.load_locale()
+        
+    def load_locale(self):
+        """
+        Load locale file based on language
+        """
+        # Get absolute path
+        abs_locale_path = os.path.join(os.getcwd(), self.locale_path)
+        
+        # Get locale file path
+        locale_file = os.path.join(abs_locale_path, f"{self.language}.json")
+        
+        # Check if locale file exists
+        if not os.path.exists(locale_file):
+            # If not exists, try to find similar locale file
+            similar_locale_file = self.find_similar_locale_file(abs_locale_path)
+            if similar_locale_file is not None:
+                locale_file = similar_locale_file
+            else:
+                # If no similar locale file found, use English
+                locale_file = os.path.join(abs_locale_path, "en_US.json")
+        
+        # Load locale file
+        try:
+            with open(locale_file, "r", encoding="utf-8") as f:
+                self.locale_dict = json.load(f)
+        except:
+            print(f"Failed to load locale file: {locale_file}")
+            self.locale_dict = {}
+            
+    def find_similar_locale_file(self, locale_path: str) -> Optional[str]:
+        """
+        Find similar locale file
 
-    def __call__(self, key):
-        return self.language_map.get(key, key)
+        Args:
+            locale_path (str): Path to locale files
 
-    def __repr__(self):
-        return "Use Language: " + self.language
+        Returns:
+            Optional[str]: Path to similar locale file
+        """
+        # Get language code (e.g., "en" from "en-US")
+        lang_code = self.language.split("_")[0].lower()
+        
+        # List all locale files
+        locale_files = os.listdir(locale_path)
+        
+        # Find similar locale file
+        for locale_file in locale_files:
+            if locale_file.lower().startswith(lang_code):
+                return os.path.join(locale_path, locale_file)
+        
+        return None
+    
+    def __call__(self, text: str) -> str:
+        """
+        Get localized text
+
+        Args:
+            text (str): Text to be localized
+
+        Returns:
+            str: Localized text
+        """
+        # Try to get localized text from locale file
+        localized_text = self.locale_dict.get(text)
+        
+        # If not found, return original text
+        if localized_text is None:
+            return text
+        
+        return localized_text

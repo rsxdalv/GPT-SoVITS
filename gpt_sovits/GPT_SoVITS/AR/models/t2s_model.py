@@ -3,27 +3,19 @@
 import os, sys
 now_dir = os.getcwd()
 sys.path.append(now_dir)
-from typing import List
+import math
+from typing import Optional
 import torch
+import torch.nn as nn
+import torch.nn.functional as F
 from tqdm import tqdm
 
-from AR.models.utils import make_pad_mask
-from AR.models.utils import (
-    topk_sampling,
-    sample,
-    logits_to_probs,
-    multinomial_sample_one_no_sync,
-    dpo_loss,
-    make_reject_y, 
-    get_batch_logps
-)
-from AR.modules.embedding import SinePositionalEmbedding
-from AR.modules.embedding import TokenEmbedding
-from AR.modules.transformer import LayerNorm
-from AR.modules.transformer import TransformerEncoder
-from AR.modules.transformer import TransformerEncoderLayer
-from torch import nn
-from torch.nn import functional as F
+from ..modules.flash_attention import FlashAttention
+from ..modules.transformer import CausalSelfAttention, MultiHeadCrossAttention, LayerNorm
+from ..modules.transformer import TransformerEncoder, TransformerEncoderLayer 
+from ..modules.embedding import SinePositionalEmbedding, TokenEmbedding
+from ..utils.utils import make_pad_mask, topk_sampling, sample, logits_to_probs, multinomial_sample_one_no_sync
+from ..utils.utils import dpo_loss, make_reject_y, get_batch_logps
 from torchmetrics.classification import MulticlassAccuracy
 
 default_config = {
@@ -678,7 +670,7 @@ class Text2SemanticDecoder(nn.Module):
         if (None in idx_list):
             for i in range(x.shape[0]):
                 if idx_list[i] is None:
-                    idx_list[i] = 1500-1  ###如果没有生成到EOS，就用最大长度代替
+                    idx_list[i] = 1500-1 ###如果没有生成到EOS，就用最大长度代替
                     
         if ref_free:
             return y_list, [0]*x.shape[0]

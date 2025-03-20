@@ -2,7 +2,7 @@ import io, wave
 import os, json, sys
 import threading
 
-from Synthesizers.base import Base_TTS_Synthesizer ,load_config
+from ..base import Base_TTS_Synthesizer, load_config
 
 from .remote_task import Remote_TTS_Task as TTS_Task, set_based_synthesizer, get_ui_config
 import requests

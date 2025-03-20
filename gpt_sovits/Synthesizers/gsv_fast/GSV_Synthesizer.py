@@ -2,7 +2,7 @@ import io, wave
 import os, json, sys
 import threading
 from typing import Any, Union, Generator, Literal, List, Dict, Tuple
-from Synthesizers.base import Base_TTS_Synthesizer, load_config
+from ..base import Base_TTS_Synthesizer, load_config
 import re
 from .gsv_task import GSV_TTS_Task as TTS_Task
 from .ssml_dealer import SSML_Dealer
@@ -30,7 +30,7 @@ dict_language = {
     "all_ja": "all_ja",
 }
 
-from GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
+from gpt_sovits.GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
 class GSV_Synthesizer(Base_TTS_Synthesizer):
     device: str = "auto"
     is_half: bool = False
@@ -69,7 +69,7 @@ class GSV_Synthesizer(Base_TTS_Synthesizer):
             self.default_character = next(iter(self.get_characters()), None)
 
         self.load_character(self.default_character)
-        ui_config_path = os.path.join("Synthesizers/gsv_fast/configs", "ui_config.json")
+        ui_config_path = os.path.join("gpt_sovits/Synthesizers/gsv_fast/configs", "ui_config.json")
         with open(ui_config_path, 'r', encoding='utf-8') as f:
             self.ui_config = json.load(f)
 

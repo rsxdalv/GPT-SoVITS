@@ -1,12 +1,10 @@
-
 import gradio as gr
+from typing import List, Dict, Any, Union
 
-from Synthesizers.base import ParamItem
-from typing import List, Dict, Literal, Optional, Any, Union
+from ...Synthesizers.base import ParamItem
+from ...tools.i18n.i18n import I18nAuto
 
-from tools.i18n.i18n import I18nAuto
-
-i18n = I18nAuto(locale_path="Synthesizers/gsv_fast/configs/i18n/locale")
+i18n = I18nAuto(locale_path="gpt_sovits/Synthesizers/gsv_fast/configs/i18n/locale")
 
 class GradioTabBuilder:
     """
@@ -136,5 +134,4 @@ def register_on_change(component_name_list: List[Union[str, List[str]]], all_gra
             gradio_component.blur(**param_dict)
         else:
             gradio_component.change(**param_dict)
-            
-    
+
