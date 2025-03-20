@@ -15,7 +15,7 @@ from text import cleaned_text_to_sequence
 from transformers import AutoModelForMaskedLM, AutoTokenizer
 from TTS_infer_pack.text_segmentation_method import split_big_text, splits, get_method as get_seg_method
 
-from tools.i18n.i18n import I18nAuto
+from gpt_sovits.tools.i18n.i18n import I18nAuto
 
 i18n = I18nAuto()
 punctuation = set(['!', '?', '…', ',', '.', '-'," "])

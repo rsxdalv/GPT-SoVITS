@@ -6,7 +6,7 @@ now_dir = os.getcwd()
 sys.path.append(now_dir)
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
-from src.common_config_manager import __version__, api_config
+from gpt_sovits.src.common_config_manager import __version__, api_config
 import soundfile as sf
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.responses import JSONResponse, FileResponse, StreamingResponse
@@ -16,7 +16,7 @@ import uvicorn
 import json
 
 # 将当前文件所在的目录添加到 sys.path
-from Synthesizers.base import Base_TTS_Task, Base_TTS_Synthesizer
+from gpt_sovits.Synthesizers.base import Base_TTS_Task, Base_TTS_Synthesizer
 
 # 创建合成器实例
 tts_synthesizer:Base_TTS_Synthesizer = None
@@ -76,11 +76,11 @@ async def tts(request: Request):
 
 
 if __name__ == "__main__":
-    # 动态导入合成器模块, 此处可写成 from Synthesizers.xxx import TTS_Synthesizer, TTS_Task
+    # 动态导入合成器模块, 此处可写成 from gpt_sovits.Synthesizers.xxx import TTS_Synthesizer, TTS_Task
     from importlib import import_module
-    from src.api_utils import get_localhost_ipv4_address
+    from gpt_sovits.src.api_utils import get_localhost_ipv4_address
     synthesizer_name = api_config.synthesizer
-    synthesizer_module = import_module(f"Synthesizers.{synthesizer_name}")
+    synthesizer_module = import_module(f"gpt_sovits.Synthesizers.{synthesizer_name}")
     TTS_Synthesizer = synthesizer_module.TTS_Synthesizer
     TTS_Task = synthesizer_module.TTS_Task
     # 初始化合成器的类

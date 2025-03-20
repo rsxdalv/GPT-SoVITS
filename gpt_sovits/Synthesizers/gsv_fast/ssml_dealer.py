@@ -7,7 +7,7 @@ sys.path.append(".")
 
 import xml.etree.ElementTree as ET
 from .gsv_task import GSV_TTS_Task as TTS_Task
-from Synthesizers.base import Base_TTS_Synthesizer, ParamItem, init_params_config
+from gpt_sovits.Synthesizers.base import Base_TTS_Synthesizer, ParamItem, init_params_config
 
 import tempfile
 import soundfile as sf

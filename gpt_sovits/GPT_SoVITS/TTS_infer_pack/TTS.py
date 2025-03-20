@@ -22,7 +22,7 @@ from feature_extractor.cnhubert import CNHubert
 from module.models import SynthesizerTrn
 import librosa
 from time import time as ttime
-from tools.i18n.i18n import I18nAuto
+from gpt_sovits.tools.i18n.i18n import I18nAuto
 from my_utils import load_audio
 from module.mel_processing import spectrogram_torch
 from TTS_infer_pack.text_segmentation_method import splits

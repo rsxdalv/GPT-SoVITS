@@ -65,7 +65,7 @@ from text.cleaner import clean_text
 from time import time as ttime
 from module.mel_processing import spectrogram_torch
 from my_utils import load_audio
-from tools.i18n.i18n import I18nAuto
+from gpt_sovits.tools.i18n.i18n import I18nAuto
 
 i18n = I18nAuto()
 

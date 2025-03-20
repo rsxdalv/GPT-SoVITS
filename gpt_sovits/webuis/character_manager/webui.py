@@ -38,7 +38,7 @@ if os.path.exists(config_path):
         state["models_path"] = config.get("models_path", "trained")
         
         
-from tools.i18n.i18n import I18nAuto
+from gpt_sovits.tools.i18n.i18n import I18nAuto
 
 
 i18n = I18nAuto(None, os.path.join(os.path.dirname(__file__), "i18n/locale"))

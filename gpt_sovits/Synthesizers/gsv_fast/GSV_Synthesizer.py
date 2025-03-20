@@ -2,7 +2,7 @@ import io, wave
 import os, json, sys
 import threading
 from typing import Any, Union, Generator, Literal, List, Dict, Tuple
-from Synthesizers.base import Base_TTS_Synthesizer, load_config
+from gpt_sovits.Synthesizers.base import Base_TTS_Synthesizer, load_config
 import re
 from .gsv_task import GSV_TTS_Task as TTS_Task
 from .ssml_dealer import SSML_Dealer
@@ -30,7 +30,7 @@ dict_language = {
     "all_ja": "all_ja",
 }
 
-from GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
+from gpt_sovits.GPT_SoVITS.TTS_infer_pack.TTS import TTS, TTS_Config
 class GSV_Synthesizer(Base_TTS_Synthesizer):
     device: str = "auto"
     is_half: bool = False

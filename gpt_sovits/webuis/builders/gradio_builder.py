@@ -1,12 +1,12 @@
 
 import gradio as gr
 
-from Synthesizers.base import ParamItem
+from gpt_sovits.Synthesizers.base import ParamItem
 from typing import List, Dict, Literal, Optional, Any, Union
 
-from tools.i18n.i18n import I18nAuto
+from gpt_sovits.tools.i18n.i18n import I18nAuto
 
-i18n = I18nAuto(locale_path="Synthesizers/gsv_fast/configs/i18n/locale")
+i18n = I18nAuto(locale_path="gpt_sovits/Synthesizers/gsv_fast/configs/i18n/locale")
 
 class GradioTabBuilder:
     """

@@ -7,7 +7,7 @@ from typing import List, Dict, Literal, Optional, Any, Union
 import urllib.parse
 import hashlib
 
-from Synthesizers.base import Base_TTS_Task, ParamItem, init_params_config
+from gpt_sovits.Synthesizers.base import Base_TTS_Task, ParamItem, init_params_config
 
 global global_based_synthesizer
 global_based_synthesizer = None

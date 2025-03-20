@@ -4,7 +4,7 @@ from pydantic import BaseModel, Field, model_validator
 
 __version__ = "2.6.3"
 
-from Synthesizers.base import load_config
+from gpt_sovits.Synthesizers.base import load_config
 
 
 class Api_Config(BaseModel):   
