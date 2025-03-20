@@ -1,3 +1,36 @@
+#!/bin/bash
+
+# Update hardcoded file paths for the new package structure
+echo "Starting file path update..."
+
+# Find paths that need to be updated in Python files
+find /workspaces/GPT-SoVITS -type f -name "*.py" | while read file; do
+    # Skip files in venv if it exists
+    if [[ "$file" == *"venv"* ]]; then
+        continue
+    fi
+    
+    # 1. Update Synthesizers file paths
+    sed -i 's|os\.path\.join("Synthesizers/|os.path.join(os.path.dirname(os.path.dirname(__file__)), "Synthesizers/|g' "$file"
+    sed -i 's|"Synthesizers/\([^"]*\)"|os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Synthesizers/\1")|g' "$file"
+    
+    # 2. Update tools file paths
+    sed -i 's|"tools/\([^"]*\)"|os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools/\1")|g' "$file"
+    
+    # 3. Update src file paths
+    sed -i 's|"src/\([^"]*\)"|os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "src/\1")|g' "$file"
+    
+    # 4. Update webuis file paths
+    sed -i 's|"webuis/\([^"]*\)"|os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "webuis/\1")|g' "$file"
+    
+    # 5. Update GPT_SoVITS file paths
+    sed -i 's|"GPT_SoVITS/\([^"]*\)"|os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/\1")|g' "$file"
+    
+    echo "Updated file paths in $file"
+done
+
+# Specifically fix the gsv_task.py file which has the error
+cat > /workspaces/GPT-SoVITS/gpt_sovits/Synthesizers/gsv_fast/gsv_task.py.new << 'EOFPY'
 import os, json, sys
 sys.path.append(".")
 from uuid import uuid4
@@ -63,3 +96,8 @@ class GSV_TTS_Task(Base_TTS_Task):
             m.update(str(self.cut_method).encode())
             m.update(str(self.emotion).encode())
         return m.hexdigest()
+EOFPY
+
+mv /workspaces/GPT-SoVITS/gpt_sovits/Synthesizers/gsv_fast/gsv_task.py.new /workspaces/GPT-SoVITS/gpt_sovits/Synthesizers/gsv_fast/gsv_task.py
+
+echo "File path update completed!"

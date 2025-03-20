@@ -78,16 +78,16 @@ class TTS_Config:
     default_configs={
                 "device": "cpu",
                 "is_half": False,
-                "t2s_weights_path": "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt",
-                "vits_weights_path": "GPT_SoVITS/pretrained_models/s2G488k.pth",
-                "cnhubert_base_path": "GPT_SoVITS/pretrained_models/chinese-hubert-base",
-                "bert_base_path": "GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large",
+                "t2s_weights_path": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"),
+                "vits_weights_path": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s2G488k.pth"),
+                "cnhubert_base_path": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/chinese-hubert-base"),
+                "bert_base_path": os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large"),
             }
     configs:dict = None
     def __init__(self, configs: Union[dict, str]=None):
         
         # 设置默认配置文件路径
-        configs_base_path:str = "GPT_SoVITS/configs/"
+        configs_base_path:str = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/configs/")
         os.makedirs(configs_base_path, exist_ok=True)
         self.configs_path:str = os.path.join(configs_base_path, "tts_infer.yaml")
         

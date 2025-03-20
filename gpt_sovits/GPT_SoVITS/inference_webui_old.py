@@ -25,23 +25,23 @@ if os.path.exists("./gweight.txt"):
             "gpt_path", gweight_data)
 else:
     gpt_path = os.environ.get(
-        "gpt_path", "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt")
+        "gpt_path", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"))
 
 if os.path.exists("./sweight.txt"):
     with open("./sweight.txt", 'r', encoding="utf-8") as file:
         sweight_data = file.read()
         sovits_path = os.environ.get("sovits_path", sweight_data)
 else:
-    sovits_path = os.environ.get("sovits_path", "GPT_SoVITS/pretrained_models/s2G488k.pth")
+    sovits_path = os.environ.get("sovits_path", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s2G488k.pth"))
 # gpt_path = os.environ.get(
 #     "gpt_path", "pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
 # )
 # sovits_path = os.environ.get("sovits_path", "pretrained_models/s2G488k.pth")
 cnhubert_base_path = os.environ.get(
-    "cnhubert_base_path", "GPT_SoVITS/pretrained_models/chinese-hubert-base"
+    "cnhubert_base_path", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/chinese-hubert-base")
 )
 bert_path = os.environ.get(
-    "bert_path", "GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large"
+    "bert_path", os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/chinese-roberta-wwm-ext-large")
 )
 infer_ttswebui = os.environ.get("infer_ttswebui", 9872)
 infer_ttswebui = int(infer_ttswebui)
@@ -528,8 +528,8 @@ def change_choices():
     return {"choices": sorted(SoVITS_names, key=custom_sort_key), "__type__": "update"}, {"choices": sorted(GPT_names, key=custom_sort_key), "__type__": "update"}
 
 
-pretrained_sovits_name = "GPT_SoVITS/pretrained_models/s2G488k.pth"
-pretrained_gpt_name = "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
+pretrained_sovits_name = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s2G488k.pth")
+pretrained_gpt_name = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt")
 SoVITS_weight_root = "SoVITS_weights"
 GPT_weight_root = "GPT_weights"
 os.makedirs(SoVITS_weight_root, exist_ok=True)

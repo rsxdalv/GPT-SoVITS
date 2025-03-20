@@ -5,8 +5,8 @@ import os
 
 # locale_path = "./i18n/locale" # The path to the i18n locale directory, you can change it to your own path
 # scan_list = ["./",
-#              "GPT_SoVITS/",
-#              "tools/"
+#              os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/"),
+#              os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools/")
 #              ]  # The path to the directory you want to scan, you can change it to your own path
 # scan_subfolders = False  # Whether to scan subfolders
 

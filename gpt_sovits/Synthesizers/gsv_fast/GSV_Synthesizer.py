@@ -69,7 +69,7 @@ class GSV_Synthesizer(Base_TTS_Synthesizer):
             self.default_character = next(iter(self.get_characters()), None)
 
         self.load_character(self.default_character)
-        ui_config_path = os.path.join("Synthesizers/gsv_fast/configs", "ui_config.json")
+        ui_config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Synthesizers/gsv_fast/configs"), "ui_config.json")
         with open(ui_config_path, 'r', encoding='utf-8') as f:
             self.ui_config = json.load(f)
 

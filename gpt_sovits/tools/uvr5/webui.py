@@ -12,7 +12,7 @@ import sys
 from mdxnet import MDXNetDereverb
 from vr import AudioPre, AudioPreDeEcho
 
-weight_uvr5_root = "tools/uvr5/uvr5_weights"
+weight_uvr5_root = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "tools/uvr5/uvr5_weights")
 uvr5_names = []
 for name in os.listdir(weight_uvr5_root):
     if name.endswith(".pth") or "onnx" in name:

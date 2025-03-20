@@ -69,7 +69,7 @@ cut_method = {
     i18n("按标点符号切"): "cut5",
 }
 
-tts_config = TTS_Config("GPT_SoVITS/configs/tts_infer.yaml")
+tts_config = TTS_Config(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/configs/tts_infer.yaml"))
 tts_config.device = device
 tts_config.is_half = is_half
 if gpt_path is not None:
@@ -134,8 +134,8 @@ def change_choices():
     return {"choices": sorted(SoVITS_names, key=custom_sort_key), "__type__": "update"}, {"choices": sorted(GPT_names, key=custom_sort_key), "__type__": "update"}
 
 
-pretrained_sovits_name = "GPT_SoVITS/pretrained_models/s2G488k.pth"
-pretrained_gpt_name = "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt"
+pretrained_sovits_name = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s2G488k.pth")
+pretrained_gpt_name = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "GPT_SoVITS/pretrained_models/s1bert25hz-2kh-longer-epoch=68e-step=50232.ckpt")
 SoVITS_weight_root = "SoVITS_weights"
 GPT_weight_root = "GPT_weights"
 os.makedirs(SoVITS_weight_root, exist_ok=True)
