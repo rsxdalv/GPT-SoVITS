@@ -298,48 +298,52 @@ with gr.Blocks() as app:
     # )            
 
 
-# 生成一句话充当测试，减少第一次请求的等待时间
-gen = tts_synthesizer.generate(tts_synthesizer.params_parser({"text":"你好，世界"}))
-next(gen)
+def main():
+    # 生成一句话充当测试，减少第一次请求的等待时间
+    gen = tts_synthesizer.generate(tts_synthesizer.params_parser({"text":"你好，世界"}))
+    next(gen)
 
-# 如果同时启用了API，则使用挂载到fastAPI的方式启动
-if app_config.also_enable_api == True:
-    import uvicorn
-    from pure_api import tts, character_list, set_tts_synthesizer
-    from fastapi import FastAPI
-    from fastapi.middleware.cors import CORSMiddleware
-    from src.api_utils import get_gradio_frp, get_localhost_ipv4_address
-    
-    set_tts_synthesizer(tts_synthesizer)
-    fastapi_app:FastAPI = app.app
-    fastapi_app.add_api_route("/tts", tts, methods=["POST", "GET"])
-    fastapi_app.add_api_route("/character_list", character_list, methods=["GET"])
-    
-    fastapi_app.add_middleware(
-            CORSMiddleware,
-            allow_origins=["*"],
-            allow_credentials=True,
-            allow_methods=["*"],
-            allow_headers=["*"],
-        )
-    
-    local_link = f"http://127.0.0.1:{app_config.server_port}"
-    link = local_link
-    if app_config.is_share:
-        share_url = get_gradio_frp(app_config.server_name, app_config.server_port, app.share_token)
-        print("This share link expires in 72 hours.")
-        print(f"Share URL: {share_url}")
-        link = share_url
-    if app_config.inbrowser:
-        import webbrowser
-        webbrowser.open(link)
+    # 如果同时启用了API，则使用挂载到fastAPI的方式启动
+    if app_config.also_enable_api == True:
+        import uvicorn
+        from pure_api import tts, character_list, set_tts_synthesizer
+        from fastapi import FastAPI
+        from fastapi.middleware.cors import CORSMiddleware
+        from src.api_utils import get_gradio_frp, get_localhost_ipv4_address
+        
+        set_tts_synthesizer(tts_synthesizer)
+        fastapi_app:FastAPI = app.app
+        fastapi_app.add_api_route("/tts", tts, methods=["POST", "GET"])
+        fastapi_app.add_api_route("/character_list", character_list, methods=["GET"])
+        
+        fastapi_app.add_middleware(
+                CORSMiddleware,
+                allow_origins=["*"],
+                allow_credentials=True,
+                allow_methods=["*"],
+                allow_headers=["*"],
+            )
+        
+        local_link = f"http://127.0.0.1:{app_config.server_port}"
+        link = local_link
+        if app_config.is_share:
+            share_url = get_gradio_frp(app_config.server_name, app_config.server_port, app.share_token)
+            print("This share link expires in 72 hours.")
+            print(f"Share URL: {share_url}")
+            link = share_url
+        if app_config.inbrowser:
+            import webbrowser
+            webbrowser.open(link)
 
-    ipv4_address = get_localhost_ipv4_address(app_config.server_name)
-    ipv4_link = f"http://{ipv4_address}:{app_config.server_port}"
-    print(f"INFO:     Local Network URL: {ipv4_link}")
-    
-    fastapi_app = gr.mount_gradio_app(fastapi_app, app, path="/")
-    uvicorn.run(fastapi_app, host=app_config.server_name, port=app_config.server_port)
-else:
-    app.queue().launch(share=app_config.is_share, inbrowser=app_config.inbrowser, server_name=app_config.server_name, server_port=app_config.server_port)
+        ipv4_address = get_localhost_ipv4_address(app_config.server_name)
+        ipv4_link = f"http://{ipv4_address}:{app_config.server_port}"
+        print(f"INFO:     Local Network URL: {ipv4_link}")
+        
+        fastapi_app = gr.mount_gradio_app(fastapi_app, app, path="/")
+        uvicorn.run(fastapi_app, host=app_config.server_name, port=app_config.server_port)
+    else:
+        app.queue().launch(share=app_config.is_share, inbrowser=app_config.inbrowser, server_name=app_config.server_name, server_port=app_config.server_port)
+
+if __name__ == "__main__":
+    main()
 

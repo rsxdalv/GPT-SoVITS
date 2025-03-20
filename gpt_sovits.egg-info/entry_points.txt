@@ -1,0 +1,2 @@
+[console_scripts]
+gpt-sovits = app:main

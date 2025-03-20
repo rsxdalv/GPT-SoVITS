@@ -1,6 +1,5 @@
 requests
 pydub
-
 pydantic
 soundfile
 flash-attention
@@ -31,9 +30,8 @@ jieba_fast
 jieba
 LangSegment
 Faster_Whisper
-fastapi 
+fastapi
 uvicorn
 wordsegment
 srt
-
 pyloudnorm
