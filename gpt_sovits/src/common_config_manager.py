@@ -1,4 +1,5 @@
 import os, sys, json
+import pkg_resources
 from typing import List, Any, Optional ,Dict, Literal   
 from pydantic import BaseModel, Field, model_validator
 
@@ -14,16 +15,18 @@ class Api_Config(BaseModel):
     synthesizer: str = "gsv_fast"
 
 
-    def __init__(self, config_path = None):
+    def __init__(self, config_path=None):
         super().__init__()
-        
+        # If no path is given, load from the package data
+        if config_path is None:
+            config_path = pkg_resources.resource_filename(__name__, "common_config.json")
         self.config_path = config_path
         assert os.path.exists(self.config_path), f"配置文件不存在: {self.config_path}"
-        if os.path.exists(self.config_path):
+        with open(self.config_path, 'r', encoding='utf-8') as f:
             all_config = load_config(self.config_path)
-            config:dict = all_config.get("common", {})
-            for key, value in config.items():
-                setattr(self, key, value)
+        config = all_config.get("common", {})
+        for key, value in config.items():
+            setattr(self, key, value)
         
 class App_Config(BaseModel):
 
@@ -48,18 +51,20 @@ class App_Config(BaseModel):
         url = f"http://{server_name}:{port}"
      
     
-    def __init__(self, config_path = None):
+    def __init__(self, config_path=None):
         super().__init__()
-        
+        # If no path is given, load from the package data
+        if config_path is None:
+            config_path = pkg_resources.resource_filename(__name__, "common_config.json")
         self.config_path = config_path
         assert os.path.exists(self.config_path), f"配置文件不存在: {self.config_path}"
-        if os.path.exists(self.config_path):
+        with open(self.config_path, 'r', encoding='utf-8') as f:
             all_config = load_config(self.config_path)
-            config = all_config.get("app_config", {})
-            for key, value in config.items():
-                setattr(self, key, value)
+        config = all_config.get("app_config", {})
+        for key, value in config.items():
+            setattr(self, key, value)
 
-app_config = App_Config("common_config.json")
-api_config = Api_Config("common_config.json")
+app_config = App_Config()
+api_config = Api_Config()
 
 

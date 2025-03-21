@@ -5,6 +5,7 @@
     
     ["text_language", "cut_method", "max_cut_length", "batch_size"]
   ],
+  "models_path": "data/models/gpt_sovits/trained",
   "advanced_settings": [
     "seed",
     "parallel_infer",

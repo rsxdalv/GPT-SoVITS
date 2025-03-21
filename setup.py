@@ -1,11 +1,6 @@
 from setuptools import setup, find_namespace_packages
 import os
 
-# Read version from common config
-with open('common_config.json', 'r') as f:
-    import json
-    version = json.load(f).get('version', '0.1.0')
-
 # Read requirements
 with open('requirements.txt', 'r', encoding='utf-8') as f:
     requirements = [line.strip() for line in f.readlines() if line.strip() and not line.startswith('#')]
@@ -16,7 +11,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='gpt-sovits',
-    version=version,
+    version="0.1.0",
     description='GPT-SoVITS text-to-speech synthesis system',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -28,6 +23,8 @@ setup(
     include_package_data=True,
     package_data={
         'gpt_sovits': [
+            'src/common_config.json',
+            'Synthesizers/gsv_fast/gsv_config.json',
             'GPT_SoVITS/configs/*.yaml',
             'GPT_SoVITS/configs/*.json',
             'GPT_SoVITS/pretrained_models/*',

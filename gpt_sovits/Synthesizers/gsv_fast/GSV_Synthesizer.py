@@ -1,5 +1,6 @@
 import io, wave
 import os, json, sys
+import pkg_resources
 import threading
 from typing import Any, Union, Generator, Literal, List, Dict, Tuple
 from gpt_sovits.Synthesizers.base import Base_TTS_Synthesizer, load_config
@@ -49,7 +50,9 @@ class GSV_Synthesizer(Base_TTS_Synthesizer):
         super().__init__()
 
         if config_path is None:
-            config_path = "gsv_config.json"
+            # config_path = "gsv_config.json"
+            config_path = pkg_resources.resource_filename(__name__, "gsv_config.json")
+        assert os.path.exists(config_path), f"配置文件不存在: {config_path}"
         config_dict = load_config(config_path)
         config_dict.update(kwargs)
         for key, value in config_dict.items():
@@ -65,34 +68,18 @@ class GSV_Synthesizer(Base_TTS_Synthesizer):
         tts_config.bert_base_path = self.bert_base_path
         self.tts_pipline = TTS(tts_config)
 
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        configs_dir = os.path.join(module_dir, "configs")
+        ui_config_path = os.path.join(configs_dir, "ui_config.json")
+                
+        with open(ui_config_path, 'r', encoding='utf-8') as f:
+            self.ui_config = json.load(f)
+
         if self.default_character is None:
             self.default_character = next(iter(self.get_characters()), None)
 
         self.load_character(self.default_character)
         
-        # Fix path construction for ui_config.json
-        module_dir = os.path.dirname(os.path.abspath(__file__))
-        configs_dir = os.path.join(module_dir, "configs")
-        ui_config_path = os.path.join(configs_dir, "ui_config.json")
-        
-        # Ensure the configs directory exists
-        os.makedirs(configs_dir, exist_ok=True)
-        
-        # If ui_config.json doesn't exist, create a default one
-        if not os.path.exists(ui_config_path):
-            default_ui_config = {
-                "models_path": "trained",
-                "ui_options": {
-                    "default_language": "zh",
-                    "default_cut_method": "auto_cut",
-                    "default_speed": 1.0
-                }
-            }
-            with open(ui_config_path, 'w', encoding='utf-8') as f:
-                json.dump(default_ui_config, f, ensure_ascii=False, indent=2)
-                
-        with open(ui_config_path, 'r', encoding='utf-8') as f:
-            self.ui_config = json.load(f)
 
     # from https://github.com/RVC-Boss/GPT-SoVITS/pull/448
     def get_streaming_tts_wav(self, params):

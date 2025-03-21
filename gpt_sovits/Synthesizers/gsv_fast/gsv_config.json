@@ -1,0 +1,9 @@
+{
+  "device": "auto",
+  "is_half": "auto",
+  "models_path": "data/models/gpt_sovits/trained",
+  "cnhubert_base_path": "data/models/gpt_sovits/chinese-hubert-base",
+  "bert_base_path": "data/models/gpt_sovits/chinese-roberta-wwm-ext-large",
+  "save_prompt_cache": true,
+  "prompt_cache_dir": "data/models/gpt_sovits/prompt_cache"
+}
