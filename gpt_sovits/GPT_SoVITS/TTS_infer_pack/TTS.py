@@ -272,45 +272,56 @@ class TTS:
         self.configs.vits_weights_path = weights_path
         self.configs.save_configs()
         
-        # Add custom module finder to handle the restructured imports
-        import sys
-        class CustomUnpickler(torch.serialization._unpickler.Unpickler):
-            def find_class(self, module, name):
-                if module == 'utils':
-                    module = 'gpt_sovits.GPT_SoVITS.utils'
-                if module == 'module.models':
-                    module = 'gpt_sovits.GPT_SoVITS.module.models'
-                return super().find_class(module, name)
-        
-        # Load with custom unpickler that handles import redirection
-        with open(weights_path, 'rb') as f:
-            dict_s2 = CustomUnpickler(f, map_location=self.configs.device).load()
+        try:
+            # Use a different approach to handle module imports during loading
+            import sys
+            import pickle
             
-        hps = dict_s2["config"]
-        self.configs.filter_length = hps["data"]["filter_length"]
-        self.configs.segment_size = hps["train"]["segment_size"]
-        self.configs.sampling_rate = hps["data"]["sampling_rate"]       
-        self.configs.hop_length = hps["data"]["hop_length"]
-        self.configs.win_length = hps["data"]["win_length"]
-        self.configs.n_speakers = hps["data"]["n_speakers"]
-        self.configs.semantic_frame_rate = "25hz"
-        kwargs = hps["model"]
-        vits_model = SynthesizerTrn(
-            self.configs.filter_length // 2 + 1,
-            self.configs.segment_size // self.configs.hop_length,
-            n_speakers=self.configs.n_speakers,
-            **kwargs
-        )
-        # if ("pretrained" not in weights_path):
-        if hasattr(vits_model, "enc_q"):
-            del vits_model.enc_q
+            # Save original sys.modules state
+            original_modules = sys.modules.copy()
             
-        vits_model = vits_model.to(self.configs.device)
-        vits_model = vits_model.eval()
-        vits_model.load_state_dict(dict_s2["weight"], strict=False)
-        self.vits_model = vits_model
-        if self.configs.is_half and str(self.configs.device)!="cpu":
-            self.vits_model = self.vits_model.half()
+            # Add module redirections
+            sys.modules['utils'] = sys.modules.get('gpt_sovits.GPT_SoVITS.utils')
+            sys.modules['module'] = sys.modules.get('gpt_sovits.GPT_SoVITS.module')
+            sys.modules['module.models'] = sys.modules.get('gpt_sovits.GPT_SoVITS.module.models')
+            
+            try:
+                # Load with standard torch.load now that module redirection is in place
+                dict_s2 = torch.load(weights_path, map_location=self.configs.device)
+                
+                hps = dict_s2["config"]
+                self.configs.filter_length = hps["data"]["filter_length"]
+                self.configs.segment_size = hps["train"]["segment_size"]
+                self.configs.sampling_rate = hps["data"]["sampling_rate"]       
+                self.configs.hop_length = hps["data"]["hop_length"]
+                self.configs.win_length = hps["data"]["win_length"]
+                self.configs.n_speakers = hps["data"]["n_speakers"]
+                self.configs.semantic_frame_rate = "25hz"
+                kwargs = hps["model"]
+                vits_model = SynthesizerTrn(
+                    self.configs.filter_length // 2 + 1,
+                    self.configs.segment_size // self.configs.hop_length,
+                    n_speakers=self.configs.n_speakers,
+                    **kwargs
+                )
+                
+                if hasattr(vits_model, "enc_q"):
+                    del vits_model.enc_q
+                    
+                vits_model = vits_model.to(self.configs.device)
+                vits_model = vits_model.eval()
+                vits_model.load_state_dict(dict_s2["weight"], strict=False)
+                self.vits_model = vits_model
+                if self.configs.is_half and str(self.configs.device)!="cpu":
+                    self.vits_model = self.vits_model.half()
+            finally:
+                # Restore original sys.modules state
+                sys.modules.clear()
+                sys.modules.update(original_modules)
+                
+        except Exception as e:
+            print(f"Error loading VITS weights: {e}")
+            raise e
 
         
     def init_t2s_weights(self, weights_path: str):
