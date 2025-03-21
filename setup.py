@@ -11,7 +11,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='gpt-sovits',
-    version="0.1.0",
+    version="2.6.3",
     description='GPT-SoVITS text-to-speech synthesis system',
     long_description=long_description,
     long_description_content_type='text/markdown',
@@ -32,10 +32,14 @@ setup(
             'GPT_SoVITS/text/*.pickle',
             'GPT_SoVITS/text/*.txt',
             'Synthesizers/gsv_fast/configs/*.json',
-            'Synthesizers/gsv_fast/ui_config.json',  # Add the specific ui_config.json
+            'Synthesizers/gsv_fast/ui_config.json',
             'Synthesizers/base/*.py',
-            'Synthesizers/*/configs/*.json',  # Include all json files in any synthesizer's configs directory
-            'Synthesizers/*/configs/i18n/locale/*.json'
+            'Synthesizers/*/configs/*.json',  # Include config JSON files
+            'Synthesizers/*/configs/i18n/locale/*.json',
+            'i18n/locale/*.json',  # Include locale files in the gpt_sovits i18n directory
+            'webuis/character_manager/i18n/locale/*.json',  # Include character_manager i18n files
+            'tools/i18n/locale/*.json',  # Include tools i18n files if they exist
+            'tools/srt_slicer/i18n/locale/*.json'  # Include srt_slicer i18n files
         ],
     },
     entry_points={

@@ -13,7 +13,14 @@ def load_language_list(language, locale_paths):
     return language_map
 
 class I18nAuto:
-    def __init__(self, language=None, locale_paths=[], locale_path="./i18n/locale"):
+    def __init__(self, language=None, locale_paths=[], locale_path=None):
+        # Use a path relative to the package instead of a relative path
+        if locale_path is None and len(locale_paths) == 0:
+            # Get the directory of the i18n module
+            package_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+            locale_path = os.path.join(package_dir, "i18n", "locale")
+            locale_paths = [locale_path]
+        
         if language in ["auto", None]:
             if app_config.locale in ["auto", None, ""]:
                 language = locale.getdefaultlocale()[0]
