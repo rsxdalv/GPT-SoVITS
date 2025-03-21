@@ -21,3 +21,4 @@ history
 app.log
 *.egg-info
 build
+dist

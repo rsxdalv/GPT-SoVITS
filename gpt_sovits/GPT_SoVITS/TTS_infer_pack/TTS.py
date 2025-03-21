@@ -271,7 +271,21 @@ class TTS:
         print(f"Loading VITS weights from {weights_path}")
         self.configs.vits_weights_path = weights_path
         self.configs.save_configs()
-        dict_s2 = torch.load(weights_path, map_location=self.configs.device)
+        
+        # Add custom module finder to handle the restructured imports
+        import sys
+        class CustomUnpickler(torch.serialization._unpickler.Unpickler):
+            def find_class(self, module, name):
+                if module == 'utils':
+                    module = 'gpt_sovits.GPT_SoVITS.utils'
+                if module == 'module.models':
+                    module = 'gpt_sovits.GPT_SoVITS.module.models'
+                return super().find_class(module, name)
+        
+        # Load with custom unpickler that handles import redirection
+        with open(weights_path, 'rb') as f:
+            dict_s2 = CustomUnpickler(f, map_location=self.configs.device).load()
+            
         hps = dict_s2["config"]
         self.configs.filter_length = hps["data"]["filter_length"]
         self.configs.segment_size = hps["train"]["segment_size"]
