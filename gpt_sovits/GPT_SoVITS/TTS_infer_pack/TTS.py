@@ -273,17 +273,27 @@ class TTS:
         self.configs.save_configs()
         
         try:
-            # Use a different approach to handle module imports during loading
+            # Import all necessary modules first
             import sys
-            import pickle
+            import importlib
+            
+            # Make sure these modules are properly imported first
+            import gpt_sovits.GPT_SoVITS.utils
+            import gpt_sovits.GPT_SoVITS.module
+            import gpt_sovits.GPT_SoVITS.module.models
             
             # Save original sys.modules state
             original_modules = sys.modules.copy()
             
-            # Add module redirections
-            sys.modules['utils'] = sys.modules.get('gpt_sovits.GPT_SoVITS.utils')
-            sys.modules['module'] = sys.modules.get('gpt_sovits.GPT_SoVITS.module')
-            sys.modules['module.models'] = sys.modules.get('gpt_sovits.GPT_SoVITS.module.models')
+            # Create direct references to the modules
+            sys.modules['utils'] = sys.modules['gpt_sovits.GPT_SoVITS.utils']
+            sys.modules['module'] = sys.modules['gpt_sovits.GPT_SoVITS.module']
+            sys.modules['module.models'] = sys.modules['gpt_sovits.GPT_SoVITS.module.models']
+            
+            # Make sure these modules are available
+            assert 'utils' in sys.modules and sys.modules['utils'] is not None
+            assert 'module' in sys.modules and sys.modules['module'] is not None
+            assert 'module.models' in sys.modules and sys.modules['module.models'] is not None
             
             try:
                 # Load with standard torch.load now that module redirection is in place
@@ -321,6 +331,28 @@ class TTS:
                 
         except Exception as e:
             print(f"Error loading VITS weights: {e}")
+            
+            # Extra debug information to help diagnose the issue
+            if "utils" in str(e) or "module" in str(e):
+                print("Debug: Checking module availability...")
+                try:
+                    import gpt_sovits.GPT_SoVITS.utils
+                    print("✅ gpt_sovits.GPT_SoVITS.utils imported successfully")
+                except Exception as e1:
+                    print(f"❌ Error importing gpt_sovits.GPT_SoVITS.utils: {e1}")
+                
+                try:
+                    import gpt_sovits.GPT_SoVITS.module
+                    print("✅ gpt_sovits.GPT_SoVITS.module imported successfully")
+                except Exception as e2:
+                    print(f"❌ Error importing gpt_sovits.GPT_SoVITS.module: {e2}")
+                
+                try:
+                    import gpt_sovits.GPT_SoVITS.module.models
+                    print("✅ gpt_sovits.GPT_SoVITS.module.models imported successfully")
+                except Exception as e3:
+                    print(f"❌ Error importing gpt_sovits.GPT_SoVITS.module.models: {e3}")
+            
             raise e
 
         

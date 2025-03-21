@@ -69,7 +69,28 @@ class GSV_Synthesizer(Base_TTS_Synthesizer):
             self.default_character = next(iter(self.get_characters()), None)
 
         self.load_character(self.default_character)
-        ui_config_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Synthesizers/gsv_fast/configs"), "ui_config.json")
+        
+        # Fix path construction for ui_config.json
+        module_dir = os.path.dirname(os.path.abspath(__file__))
+        configs_dir = os.path.join(module_dir, "configs")
+        ui_config_path = os.path.join(configs_dir, "ui_config.json")
+        
+        # Ensure the configs directory exists
+        os.makedirs(configs_dir, exist_ok=True)
+        
+        # If ui_config.json doesn't exist, create a default one
+        if not os.path.exists(ui_config_path):
+            default_ui_config = {
+                "models_path": "trained",
+                "ui_options": {
+                    "default_language": "zh",
+                    "default_cut_method": "auto_cut",
+                    "default_speed": 1.0
+                }
+            }
+            with open(ui_config_path, 'w', encoding='utf-8') as f:
+                json.dump(default_ui_config, f, ensure_ascii=False, indent=2)
+                
         with open(ui_config_path, 'r', encoding='utf-8') as f:
             self.ui_config = json.load(f)
 

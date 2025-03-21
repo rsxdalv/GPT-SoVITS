@@ -35,7 +35,9 @@ setup(
             'GPT_SoVITS/text/*.pickle',
             'GPT_SoVITS/text/*.txt',
             'Synthesizers/gsv_fast/configs/*.json',
+            'Synthesizers/gsv_fast/ui_config.json',  # Add the specific ui_config.json
             'Synthesizers/base/*.py',
+            'Synthesizers/*/configs/*.json',  # Include all json files in any synthesizer's configs directory
             'Synthesizers/*/configs/i18n/locale/*.json'
         ],
     },
