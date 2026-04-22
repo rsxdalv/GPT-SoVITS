@@ -11,7 +11,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 setup(
     name='gpt-sovits',
-    version="2.6.3",
+    version="2.6.4",
     description='GPT-SoVITS text-to-speech synthesis system',
     long_description=long_description,
     long_description_content_type='text/markdown',
