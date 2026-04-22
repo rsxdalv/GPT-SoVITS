@@ -15,7 +15,7 @@ gradio_client
 ffmpeg-python
 onnxruntime
 tqdm
-funasr==1.0.0
+funasr==1.0.27
 cn2an
 pypinyin
 pyopenjtalk
