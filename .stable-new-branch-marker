@@ -1,0 +1,8 @@
+# Stable-New Branch Marker
+
+This file marks the stable-new branch which contains:
+- All changes from the stable branch (library-focused fork)
+- Merged with latest changes from RVC-Boss/GPT-SoVITS:main (upstream)
+- Created: 2025-12-31
+
+Branch created to maintain library compatibility while incorporating upstream updates.
